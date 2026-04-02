@@ -30,10 +30,11 @@ def bank(userid):
                 cursor.execute(sql, [new_acc,userid,bancode,bal,nick])
                 conn.commit()
             case '2':
-                sql = "select * from accounts where user_ID = :1"
-                cursor.execute(sql,{userid})
-                if cursor:
-                    for row in cursor:
+                sql = "select * from accounts where userid = :1"
+                cursor.execute(sql,[userid])
+                rows = cursor.fetchall()
+                if rows:
+                    for row in rows:
                         print(row)
                 else:
                     print("계좌 없음")
