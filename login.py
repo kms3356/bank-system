@@ -29,11 +29,13 @@ def ID_gen():
             address = input("주소 입력: ")
             return id, ps, name, phone, address
 
+
 def admin(id, cursor):
     sql = "select role from users where user_id = :1"
     cursor.execute(sql,[id])
     role = cursor.fetchone()[0]
     return role
+
 
 menu_data = [["1", "회원가입"], ["2", "로그인"], ["q", "종료"]]
 while True:
