@@ -3,12 +3,14 @@ import oracledb
 import bank
 from tabulate import tabulate
 from dotenv import load_dotenv
+
+
 load_dotenv()
 user = os.getenv("DB_USER")
 password = os.getenv("DB_PASSWORD")
 dsn = os.getenv("DB_DSN")
 
-conn = oracledb.connect(user = user, password = password, dsn=dsn)
+conn = oracledb.connect(user=user, password=password, dsn=dsn)
 cursor = conn.cursor()
 
 def ID_gen():
