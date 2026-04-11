@@ -7,9 +7,9 @@ def bank_menu(userid,conn,cursor):
     name = cursor.fetchone()[0]
     menu_data = [["1", "내 계좌 생성"], ["2", "내 계좌 조회"], ["3", "입금"], ["4", "출금"], ["5", "계좌이체"], ["6", "거래내역 조회"], ["7", "내 계좌 별명 수정"], ["8", "내 계좌 검색"], ["q", "로그아웃"]]
     while True:
-        print("\n" + "="*26)
-        print(f"{name} BANKING SYSTEM".center(26))
-        print("="*26)
+        print("\n" + "="*30)
+        print(f"{name} BANKING SYSTEM".center(28))
+        print("="*30)
         print(tabulate(menu_data, headers=["번호", "메뉴"], tablefmt="rounded_grid"))
         n = input("선택 : ")
         match n:
@@ -32,6 +32,7 @@ def bank_menu(userid,conn,cursor):
             case '3':
                 try:
                     sel_acc = def_modul.select_acc(userid, cursor, '3')
+                    if not sel_acc: continue
                     money = int(input("입금할 금액: "))
                     if money <= 0:
                         print("입금액은 0보다 커야합니다.")
@@ -52,6 +53,7 @@ def bank_menu(userid,conn,cursor):
             case '4':
                 try:
                     sel_acc = def_modul.select_acc(userid, cursor, '4')
+                    if not sel_acc: continue
                     sql = "select balance from accounts where account_number = :1"
                     cursor.execute(sql, [sel_acc])
                     bal = cursor.fetchone()
@@ -81,19 +83,29 @@ def bank_menu(userid,conn,cursor):
                     def_modul.my_acc(userid, cursor, conn)
                 elif n == '2':
                     def_modul.local_acc(userid, cursor, conn)
+                elif n == '3':
+                    def_modul.unified_acc(userid, cursor, conn)
+                else:
+                    print("잘못된 입력")
+                    continue
                     
             case '6':
                 try:
-                    sql = "select * from log where userid = :1"
+                    sql = "select * from log where userid = :1 order by log_id"
                     cursor.execute(sql, [userid])
                     rows = cursor.fetchall()
-                    header = ["logID", "userID", "계좌번호", "거래내용", "금액", "날짜"]
-                    print(tabulate(rows, headers=header, tablefmt="fancy_grid", stralign="center", numalign="center"))
+                    if rows:
+                        header = ["logID", "userID", "계좌번호", "거래내용", "금액", "날짜"]
+                        print(tabulate(rows, headers=header, tablefmt="fancy_grid", stralign="center", numalign="center"))
+                    else:
+                        print("거래내역 없음.")
+                        continue
                 except Exception as e:
                     print(f"거래내역 조회 중 오류 발생 : {e}")
             case '7':
                 try:
                     sel_acc = def_modul.select_acc(userid, cursor, '5')
+                    if not sel_acc: continue
                     n = input("새로운 별명: ")
                     sql = "update accounts set nickname = :1 where account_number = :2"
                     cursor.execute(sql, [n, sel_acc])
@@ -101,21 +113,28 @@ def bank_menu(userid,conn,cursor):
                 except Exception as e:
                     print(f"계좌 별명 수정 중 오류 발생 : {e}")
             case '8':
-                search_menu = [["1", "계좌번호"], ["2", "별명"], ["3", "은행"]]
-                header = ["번호", "검색 대상"]
-                while True:
-                    print(tabulate(search_menu, headers=header, tablefmt="rounded_grid"))
-                    n = input("선택 : ")
-                    if n in ('1','2','3'): break
-                    else:
-                        print("다시 입력")
-                        continue
-                if n == '1':
-                    def_modul.search('account_number', '계좌번호', cursor)
-                if n == '2':
-                    def_modul.search('nickname', '별명', cursor)
-                if n == '3':
-                    def_modul.search('bankid', '은행', cursor)
+                sql = "select * from accounts where userid = :1"
+                cursor.execute(sql,[userid])
+                rows = cursor.fetchall()
+                if rows:
+                    search_menu = [["1", "계좌번호"], ["2", "별명"], ["3", "은행"]]
+                    header = ["번호", "검색 대상"]
+                    while True:
+                        print(tabulate(search_menu, headers=header, tablefmt="rounded_grid"))
+                        n = input("선택 : ")
+                        if n in ('1','2','3'): break
+                        else:
+                            print("다시 입력")
+                            continue
+                    if n == '1':
+                        def_modul.search('account_number', '계좌번호', cursor, userid)
+                    if n == '2':
+                        def_modul.search('nickname', '별명', cursor, userid)
+                    if n == '3':
+                        def_modul.search('bankid', '은행', cursor, userid)
+                else:
+                    print("계좌 없음")
+                    continue
 
             case 'q': break
             case _:
