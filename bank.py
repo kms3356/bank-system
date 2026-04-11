@@ -142,7 +142,6 @@ def bank_menu(userid,conn,cursor):
                 continue
 
 
-
 def admin_menu(conn,cursor):
     ad_menu = [["1", "전체 사용자 조회"], ["2", "사용자 정보 수정"], ["3", "사용자 정보 삭제"], ["4", "로그아웃"]]
     while True:

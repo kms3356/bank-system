@@ -21,7 +21,6 @@ def gen_acc(cursor):
         else: 
             print("잘못된 입력")
             continue
-
     
     while True:
         bal = input("초기 입금액(1000원 이상) : ")
