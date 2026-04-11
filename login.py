@@ -22,6 +22,7 @@ def ID_gen():
         if row[0] > 0:
             print("ID중복. 다시 입력하세요.")
             continue
+
         else: 
             ps = input("비밀번호 입력: ")
             name = input("이름 입력: ")
