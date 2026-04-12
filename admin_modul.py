@@ -4,7 +4,7 @@ def in_put():
     print('\n' + tabulate([["1", "전체 사용자 조회"], ["2", "사용자 정보 수정"], ["3", "사용자 정보 삭제"], ["q", "로그아웃"]], headers=["번호", "관리자 메뉴"], tablefmt="rounded_grid"))
     return(input("선택 : "))
 
-class admin_session:
+class Admin_session:
     def __init__(self, conn, cursor):
         self.conn = conn
         self.cursor = cursor

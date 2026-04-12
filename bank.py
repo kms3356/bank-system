@@ -3,9 +3,10 @@ import bank_modul
 import admin_modul
 
 def bank_menu(userid,conn,cursor):
-
+    
+    bank_session = bank_modul.Bank_session(userid, conn, cursor)
+    acc_trans = def_modul.Acc_transfer(userid, cursor, conn)
     while True:
-        bank_session = bank_modul.bank_session(userid, conn, cursor)
 
         n = bank_session.in_put()
         match n:
@@ -22,7 +23,6 @@ def bank_menu(userid,conn,cursor):
                 bank_session.withdraw()
 
             case '5':
-                acc_trans = def_modul.acc_transfer(userid, cursor, conn)
                 n = acc_trans.in_put()
                 if n == '1':
                     acc_trans.my_acc()
@@ -51,8 +51,8 @@ def bank_menu(userid,conn,cursor):
 
 
 def admin_menu(conn,cursor):
+    ad_session = admin_modul.Admin_session(conn, cursor)
     while True:
-        ad_session = admin_modul.admin_session(conn, cursor)
         n = admin_modul.in_put()
         match n:
             case '1':

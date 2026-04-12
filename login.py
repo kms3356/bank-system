@@ -12,9 +12,10 @@ dsn = os.getenv("DB_DSN")
 conn = oracledb.connect(user=user, password=password, dsn=dsn)
 cursor = conn.cursor()
 
+
+user_session = login_modul.Login_session(conn, cursor)
 while True:
     n = login_modul.in_put()
-    user_session = login_modul.login_session(conn, cursor)
     if n =='1':
         user_session.join_mem()
 

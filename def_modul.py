@@ -83,7 +83,7 @@ def search(se, cul, cursor, userid):
         except Exception as e:
             print(f"계좌검색 중 오류 발생 : {e}")
 
-class acc_transfer:
+class Acc_transfer:
     def __init__(self, userid, cursor, conn):
         self.userid = userid
         self.cursor = cursor

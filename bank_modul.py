@@ -1,6 +1,6 @@
 from tabulate import tabulate
 import def_modul
-class bank_session:
+class Bank_session:
     def __init__(self, userid, conn, cursor):
         self.conn = conn
         self.cursor = cursor

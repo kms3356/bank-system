@@ -7,7 +7,7 @@ def in_put():
     print(tabulate([["1", "회원가입"], ["2", "로그인"], ["q", "종료"]], headers=["번호", "메뉴"], tablefmt="rounded_grid"))
     return(input("선택 : "))
 
-class login_session:
+class Login_session:
     def __init__(self, conn, cursor):
         self.conn = conn
         self.cursor = cursor
