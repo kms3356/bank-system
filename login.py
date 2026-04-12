@@ -14,15 +14,19 @@ cursor = conn.cursor()
 
 while True:
     n = login_modul.in_put()
+    user_session = login_modul.login_session(conn, cursor)
     if n =='1':
-        login_modul.join_mem(cursor,conn)
+        user_session.join_mem()
 
     elif n=='2':
-        id, role = login_modul.log_in(cursor,conn)
-        if role == 'user':
-            bank.bank_menu(id,conn,cursor)
-        elif role == 'admin':
-            bank.admin_menu(conn,cursor)
+        try:
+            id, role = user_session.log_in()
+            if role == 'user':
+                bank.bank_menu(id,conn,cursor)
+            elif role == 'admin':
+                bank.admin_menu(conn,cursor)
+        except TypeError:
+            continue
 
     elif n=='q':
         print("종료합니다.")

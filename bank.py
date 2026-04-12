@@ -1,50 +1,47 @@
-from tabulate import tabulate
 import def_modul
 import bank_modul
 import admin_modul
 
 def bank_menu(userid,conn,cursor):
-    sql = "select name from users where user_ID = :1"
-    cursor.execute(sql, [userid])
-    name = cursor.fetchone()[0]
 
     while True:
-        n = bank_modul.in_put(name)
+        bank_session = bank_modul.bank_session(userid, conn, cursor)
+
+        n = bank_session.in_put()
         match n:
             case '1': 
-                bank_modul.acc_generate(userid,cursor,conn)
+                bank_session.acc_generate()
 
             case '2':
                 def_modul.select_acc(userid, cursor, '2')
 
             case '3':
-                bank_modul.deposit(userid,cursor,conn)
+                bank_session.deposit()
 
             case '4':
-                bank_modul.withdraw(userid,cursor,conn)
+                bank_session.withdraw()
 
             case '5':
-                me_data = [["1", "내 계좌로 이체"], ["2", "로컬 계좌로 이체"], ["3", "통합 계좌로 이체"]]
-                print(tabulate(me_data, headers=["번호", "계좌이체 메뉴"], tablefmt="rounded_grid"))
-                n = input("선택 : ")
+                acc_trans = def_modul.acc_transfer(userid, cursor, conn)
+                n = acc_trans.in_put()
                 if n == '1':
-                    def_modul.my_acc(userid, cursor, conn)
+                    acc_trans.my_acc()
                 elif n == '2':
-                    def_modul.local_acc(userid, cursor, conn)
+                    acc_trans.local_acc()
                 elif n == '3':
-                    def_modul.unified_acc(userid, cursor, conn)
+                    acc_trans.unified_acc()
                 else:
                     print("잘못된 입력입니다.")
                     continue
                     
             case '6':
-                bank_modul.log(userid,cursor)
+                bank_session.log()
 
             case '7':
-                bank_modul.ch_nick(userid,cursor,conn)
+                bank_session.ch_nick()
 
             case '8':
-                bank_modul.acc_search(userid,cursor)
+                bank_session.acc_search()
 
             case 'q': break
 
@@ -55,16 +52,17 @@ def bank_menu(userid,conn,cursor):
 
 def admin_menu(conn,cursor):
     while True:
+        ad_session = admin_modul.admin_session(conn, cursor)
         n = admin_modul.in_put()
         match n:
             case '1':
-                admin_modul.user_inquiry(cursor)
+                ad_session.user_inquiry()
 
             case '2':
-                admin_modul.ch_user(cursor,conn)
+                ad_session.ch_user()
 
             case '3':
-                admin_modul.del_user(cursor,conn)
+                ad_session.del_user()
 
             case 'q' : break
 
