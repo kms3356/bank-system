@@ -16,7 +16,7 @@ class Bank_session:
         print("="*30)
 
         print(tabulate([["1", "내 계좌 생성"], ["2", "내 계좌 조회"], ["3", "입금"], ["4", "출금"], 
-                        ["5", "계좌이체"], ["6", "거래내역 조회"], ["7", "내 계좌 별명 수정"], ["8", "내 계좌 검색"], 
+                        ["5", "계좌이체"], ["6", "거래내역 조회"], ["7", "내 계좌 별명 수정"], ["8", "내 계좌 검색"], ["9", "내 계좌 삭제"],
                         ["q", "로그아웃"]], headers=["번호", "메뉴"], tablefmt="rounded_grid"))
         return(input("선택 : "))
 
@@ -159,3 +159,18 @@ class Bank_session:
         else:
             print("계좌가 없습니다.")
             return
+        
+    def acc_del(self):
+        sel_acc = def_modul.select_acc(self.userid, self.cursor, '5')
+        if not sel_acc: return
+        try:
+            sql = "delete from log where account_number = :1"
+            self.cursor.execute(sql, [sel_acc])
+            sql = "delete from accounts where account_number = :1"
+            self.cursor.execute(sql, [sel_acc])
+            self.conn.commit()
+            print("계좌 삭제에 성공했습니다.")
+
+        except Exception as e:
+            print(f"계좌 삭제 중 오류 발생 : {e}")
+            self.conn.rollback()

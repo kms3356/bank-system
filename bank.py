@@ -43,6 +43,9 @@ def bank_menu(userid,conn,cursor):
             case '8':
                 bank_session.acc_search()
 
+            case '9':
+                bank_session.acc_del()
+
             case 'q': break
 
             case _:

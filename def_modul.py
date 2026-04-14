@@ -64,6 +64,7 @@ def select_acc(userid, cursor, menu, my_to_my=False):
             return False
     except Exception as e:
         print(f"계좌 조회 중 오류 발생 : {e}")
+
 def search(se, cul, cursor, userid):
     while True:
         try:
@@ -82,7 +83,8 @@ def search(se, cul, cursor, userid):
 
         except Exception as e:
             print(f"계좌검색 중 오류 발생 : {e}")
-
+            return
+        
 class Acc_transfer:
     def __init__(self, userid, cursor, conn):
         self.userid = userid
@@ -118,8 +120,8 @@ class Acc_transfer:
                 return
             while True:
                 money = int(input("계좌이체할 금액 입력: "))
-                if money < 0:
-                    print("금액은 0이상만 입력 가능합니다.")
+                if money <= 0:
+                    print("금액은 0보다 커야합니다.")
                     continue
                 if bal[0] < money:
                     print("잔액이 부족합니다.")
@@ -190,7 +192,7 @@ class Acc_transfer:
                     bal = self.cursor.fetchone()
                     while True:
                         money = int(input("계좌이체할 금액 입력: "))
-                        if money < 0 or bal[0] < money:
+                        if money <= 0 or bal[0] < money:
                             print("금액 오류. 금액 다시 입력.")
                         else: break
 
@@ -202,6 +204,22 @@ class Acc_transfer:
 
                     sql = "insert into log values(log_no.nextval, :1, :2, :3, :4, sysdate)"
                     self.cursor.execute(sql, [self.userid, sel_acc, '통합계좌이체', money])
+
+                    sql = "select user_id from accounts where account_num = :1"
+                    cursor2.execute(sql, [sel_acc])
+                    row = cursor2.fetchone()
+                    if row is None:
+                        sql = "select nickname from accounts where account_number = :1"
+                        self.cursor.execute(sql, [sel_acc])
+                        nick = self.cursor.fetchone()[0]
+                        sql = "insert into accounts values(:1, :2, :3, :4, :5)"
+                        cursor2.execute(sql, [sel_acc, 1, self.userid, bal[0] - money, nick])
+                    else:
+                        sql = "update accounts set balance = balance - :1 where account_num = :2"
+                        cursor2.execute(sql, [money, sel_acc])
+                    sql = "insert into transactions values(seq_trans_id.nextval, :1, :2, :3, '통합계좌이체', sysdate)"
+                    cursor2.execute(sql, [sel_acc, unify_acc, money])   
+
                     self.conn.commit()
                     conn2.commit()
                     print("\n이체가 성공적으로 완료되었습니다.")
