@@ -1,5 +1,5 @@
 from tabulate import tabulate
-
+import hashlib
 def in_put():
     print("\n" + "="*21)
     print("MAIN MENU".center(21))
@@ -38,10 +38,14 @@ class Login_session:
 
     def join_mem(self):
         try:
+            hash_obj = hashlib.sha256()
             print("====회원가입 서비스====")
             id, ps, name, phone, address = self.ID_gen()
+            hash_obj.update(ps.encode())
+            hashed_ps = hash_obj.hexdigest()
+
             sql = "insert into users (user_ID, password, name, phone, address) values (:id, :ps, :name, :phone, :address)"
-            self.cursor.execute(sql,{'id':id, 'ps':ps, 'name':name, 'phone':phone, 'address':address})
+            self.cursor.execute(sql,{'id':id, 'ps':hashed_ps, 'name':name, 'phone':phone, 'address':address})
             print("회원가입이 완료되었습니다.")
             self.conn.commit()
         except Exception as e:
@@ -51,8 +55,11 @@ class Login_session:
 
     def log_in(self):
         try:
+            hash_obj = hashlib.sha256()
             id = input("\n" + "ID 입력: ")
-            ps = input("비밀번호 입력: ")
+            pswd = input("비밀번호 입력: ")
+            hash_obj.update(pswd.encode())
+            ps = hash_obj.hexdigest()
             sql = "select password from users where user_ID = :id"
             self.cursor.execute(sql, {'id':id})
             row = self.cursor.fetchone()

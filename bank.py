@@ -72,3 +72,5 @@ def admin_menu(conn,cursor):
             case _:
                 print("잘못된 입력입니다.")
                 continue
+
+
