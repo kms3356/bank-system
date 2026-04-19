@@ -73,6 +73,9 @@ python login.py
 
   * 2026.04.18 - 2026.04.23
 
+### PPT 및 시연동영상
+[Python bank PPT.pptx](https://github.com/user-attachments/files/26866323/Python.bank.PPT.pptx)
+
 ### 작성자
 
   * **이름**: 김민석
